@@ -54,23 +54,21 @@ public class Complexity {
 	public static void methodLogLogN(int n) {
 		int opsCounter = 1;
 		
-		for(int i = 1; i <n ; i*= 2) {
-			
-			for(int j = 1; j < n; j *= 2) {
-				System.out.println("MmethodLogLogN Operation "+opsCounter); 
-				opsCounter++ ;
-			}
+		for(int j = 1; j < n; ) {
+			System.out.println("MmethodLogLogN Operation "+opsCounter); 
+			 n = (int) Math.sqrt(n);
+			opsCounter++ ;
 		}
 	}
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
-//		 methodSquare(8);
-//		 methodCube(3);
-		 //methodLog(8);
-//		 methodNLogN(8);
-		 methodLogLogN(8);
-	}
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		
+////		 methodSquare(8);
+////		 methodCube(3);
+//		 methodLog(8);
+////		 methodNLogN(8);
+//		 methodLogLogN(8);
+//	}
 
 }

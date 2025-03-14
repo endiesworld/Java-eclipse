@@ -33,7 +33,4 @@ public class SinglyLinkedList {
 	      System.out.print("List after removing nodes: ");
 	      numList.printList();
 	   }
-
-	
-
 }
