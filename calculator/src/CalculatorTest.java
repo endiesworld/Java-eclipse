@@ -23,6 +23,7 @@ public class CalculatorTest {
 	    test("(((2)))", 2.0);
 	    test("-(-5)", 5.0);
 	    test("-(3^2)+1", -8.0);
+	    test("7 + (6 * 5^2 + 3)", 160);
 
 	    // Invalid input tests
 	    testExpectError("2++3");

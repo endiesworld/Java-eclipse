@@ -1,10 +1,9 @@
+package expression;
 
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Calculator {
-	
+	private static final Map<String, Double> variableTable = new HashMap<>();
 	 private String[] tokens;  // Token array (e.g. {"2", "+", "3"})
 	    private int pos = 0;      // Current position in the token array
 
@@ -14,6 +13,7 @@ public class Calculator {
 	        tokens = new String[raw.length + 1];
 	        System.arraycopy(raw, 0, tokens, 0, raw.length);
 	        tokens[raw.length] = "EOF";  // end of input
+
 	    }
 
 	    
@@ -43,12 +43,24 @@ public class Calculator {
 	            }
 
 	            // Operators or parentheses
-	            else if ("+-*/()^".indexOf(c) != -1) {
+	            else if ("+-*/()^=".indexOf(c) != -1) {
 	                result.add(String.valueOf(c));
 	                i++;
 	            }
 
 	            // Anything else is illegal for now
+	            
+	            else if(Character.isLetter(c)) {
+	            	StringBuilder str = new StringBuilder();
+	            	while(i < input.length() && Character.isLetterOrDigit(input.charAt(i))) {
+	            		str.append(input.charAt(i));
+	            		i++;
+	            	}
+	            	
+	            	result.add(str.toString());
+	            }
+	            
+	            
 	            else {
 	                throw new RuntimeException("Invalid character: " + c);
 	            }
@@ -60,13 +72,39 @@ public class Calculator {
 	    }
 
 	 
-	    // Entry point to parse and evaluate the expression
-	    public double parse() {
-	        double result = expr();
-	        if (!tokens[pos].equals("EOF")) {
-	            throw new RuntimeException("Unexpected token after expression: " + tokens[pos]);
+	 // Entry point to parse either expression or definition
+	    public double parseCalculation() {
+	        if (tokens[pos].equals("define")) {
+	            return handleDefinition();
+	        } else {
+	            double result = expr();
+	            if (!tokens[pos].equals("EOF")) {
+	                throw new RuntimeException("Unexpected token after expression: " + tokens[pos]);
+	            }
+	            return result;
 	        }
-	        return result;
+	    }
+	    
+	    
+	 // define <identifier> = <expression>
+	    private double handleDefinition() {
+	        pos++; // skip "define"
+
+	        if (!isIdentifier(tokens[pos])) {
+	            throw new RuntimeException("Invalid identifier: " + tokens[pos]);
+	        }
+
+	        String name = tokens[pos];
+	        pos++;
+
+	        if (!tokens[pos].equals("=")) {
+	            throw new RuntimeException("Expected '=' in definition but found: " + tokens[pos]);
+	        }
+
+	        pos++; // skip '='
+	        double value = expr();
+	        variableTable.put(name, value);
+	        return value;
 	    }
 
 	    // expr → term (( "+" | "-" ) term )*
@@ -133,7 +171,20 @@ public class Calculator {
 	            return -factorWithPower();  // apply negation to the next factor
 	        }
 	        
-	      
+	        if (tok.equals("+")) {
+	            pos++;
+	            return factorWithPower();   // Just return the value
+	        }
+	        
+	        // Check identifier first
+	        if (isIdentifier(tok)) {
+	            if (!variableTable.containsKey(tok)) {
+	                throw new RuntimeException("Undefined identifier: " + tok);
+	            }
+	            pos++;
+	            return variableTable.get(tok);
+	        }
+	        
 
 	        if (isInteger(tok)) {
 	            pos++;
@@ -175,5 +226,10 @@ public class Calculator {
 	            return false;
 	        }
 	    }
+	    
+	    private boolean isIdentifier(String s) {
+	        return s.matches("[a-zA-Z][a-zA-Z0-9_]*");
+	    }
+
 
 }
