@@ -7,28 +7,28 @@ public class CalculatorTest {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-//		runTests();
+		runTests();
 		
-		Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Enter calculations (type 'exit' to quit):");
-        
-        while (true) {
-            String line = scanner.nextLine().trim();
-
-            if (line.equalsIgnoreCase("exit")) break;
-            if (line.isEmpty()) continue;
-
-            try {
-                Calculator calc = new Calculator(line);
-                double result = calc.parseCalculation();
-                System.out.println("=> " + result);
-            } catch (RuntimeException e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        }
-
-        scanner.close();
+//		Scanner scanner = new Scanner(System.in);
+//
+//        System.out.println("Enter calculations (type 'exit' to quit):");
+//        
+//        while (true) {
+//            String line = scanner.nextLine().trim();
+//
+//            if (line.equalsIgnoreCase("exit")) break;
+//            if (line.isEmpty()) continue;
+//
+//            try {
+//                Calculator calc = new Calculator(line);
+//                double result = calc.parseCalculation();
+//                System.out.println("=> " + result);
+//            } catch (RuntimeException e) {
+//                System.out.println("Error: " + e.getMessage());
+//            }
+//        }
+//
+//        scanner.close();
 	}
 	
 	
@@ -36,7 +36,9 @@ public class CalculatorTest {
 	private static void runTests() {
         // Reset symbol table before test run
         System.out.println("📌 Running Calculator Tests...\n");
-
+        test(" 25 ^ 0", 1.0);
+        test(" 2 ^ -2", 0.25);
+        test("5 ^ (3 /4)",  3.34370152488211);
         test("define a = 5 + 3", 8.0);
         test("define b = a + 2", 10.0);
         test("a + b", 18.0);
@@ -48,6 +50,8 @@ public class CalculatorTest {
         test("define u = +4", 4.0);
         test("define v = -5", -5.0);
         test("u + v", -1.0);
+        test("u = 5", 5.0);
+        test("u + v", 0.0);
 
         // Parentheses and precedence
         test("define m = (2 + 3) * 4", 20.0);

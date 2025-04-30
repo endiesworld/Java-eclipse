@@ -48,7 +48,7 @@ public class Calculator {
 	                i++;
 	            }
 
-	            // Anything else is illegal for now
+	            
 	            
 	            else if(Character.isLetter(c)) {
 	            	StringBuilder str = new StringBuilder();
@@ -60,7 +60,7 @@ public class Calculator {
 	            	result.add(str.toString());
 	            }
 	            
-	            
+	         // Anything else is illegal for now
 	            else {
 	                throw new RuntimeException("Invalid character: " + c);
 	            }
@@ -74,8 +74,20 @@ public class Calculator {
 	 
 	 // Entry point to parse either expression or definition
 	    public double parseCalculation() {
+//	        if (tokens[pos].equals("define")) {
+//	            return handleDefinition();
+//	        } else {
+//	            double result = expr();
+//	            if (!tokens[pos].equals("EOF")) {
+//	                throw new RuntimeException("Unexpected token after expression: " + tokens[pos]);
+//	            }
+//	            return result;
+//	        }
+	    	
 	        if (tokens[pos].equals("define")) {
 	            return handleDefinition();
+	        } else if (isIdentifier(tokens[pos]) && peekNextToken().equals("=")) {
+	            return handleAssignment();
 	        } else {
 	            double result = expr();
 	            if (!tokens[pos].equals("EOF")) {
@@ -229,6 +241,30 @@ public class Calculator {
 	    
 	    private boolean isIdentifier(String s) {
 	        return s.matches("[a-zA-Z][a-zA-Z0-9_]*");
+	    }
+
+	    private double handleAssignment() {
+	        String name = tokens[pos];
+	        if (! variableTable.containsKey(name)) {
+	            throw new RuntimeException("Cannot assign to undefined variable: " + name);
+	        }
+	        pos++; // skip identifier
+
+	        if (!tokens[pos].equals("=")) {
+	            throw new RuntimeException("Expected '=' in assignment but found: " + tokens[pos]);
+	        }
+	        pos++; // skip '='
+
+	        double value = expr();
+	        variableTable.put(name, value); // update existing variable
+	        return value;
+	    }
+	    
+	    private String peekNextToken() {
+	        if (pos + 1 < tokens.length) {
+	            return tokens[pos + 1];
+	        }
+	        return "EOF";
 	    }
 
 
